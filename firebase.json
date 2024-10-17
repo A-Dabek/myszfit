@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "dist/myszfit/browser",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
