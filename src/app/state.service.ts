@@ -6,7 +6,6 @@ import {
   Firestore,
   orderBy,
   query,
-  setDoc,
   updateDoc,
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
@@ -15,7 +14,7 @@ export interface Activity {
   id: string;
   order: number;
   name: string;
-  lastDate: string;
+  lastDate: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -31,13 +30,8 @@ export class StateService {
   ) as Observable<Activity[]>;
 
   updateActivityDate(id: string) {
-    const currentDate = new Date().toLocaleDateString('pl', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-    });
     const activityDocRef = doc(this.activitiesCollection, id);
 
-    return updateDoc(activityDocRef, { lastDate: currentDate });
+    return updateDoc(activityDocRef, { lastDate: new Date().getTime() });
   }
 }

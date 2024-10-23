@@ -6,7 +6,14 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
+import { map } from 'rxjs';
 import { StateService } from './state.service';
+
+export interface ActivityViewModel {
+  id: string;
+  name: string;
+  lastDate: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -48,7 +55,39 @@ export class AppComponent {
     });
   });
 
-  readonly activities$ = this.stateService.activities$;
+  readonly activities$ = this.stateService.activities$.pipe(
+    map((activities) =>
+      activities.map((activity) => {
+        const date = new Date(activity.lastDate);
+        const startOfWeek = new Date();
+        const today = new Date();
+
+        // Adjust the start of the week to Monday
+        startOfWeek.setDate(
+          today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1),
+        );
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        // Check if the date is in the current week
+        const isInThisWeek = (date: Date): boolean => {
+          return date >= startOfWeek;
+        };
+
+        // Example usage within your map function
+        return {
+          name: activity.name,
+          id: activity.id,
+          lastDate: isInThisWeek(date)
+            ? new Date(activity.lastDate).toLocaleDateString('pl', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+              })
+            : '🤸',
+        } as ActivityViewModel;
+      }),
+    ),
+  );
 
   trackClick(id: string) {
     this.stateService.updateActivityDate(id);
