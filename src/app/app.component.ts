@@ -46,8 +46,12 @@ export interface ActivityViewModel {
                 class="flex items-center space-x-2 relative"
                 (click)="toggleSlider(activity.id)"
               >
-                <span class="text-gray-700">
-                  {{ activity.lastDate || '🤸' }}
+                <span class="text-gray-700 font-medium">
+                  {{
+                    activity.id === previewingId
+                      ? previewDate
+                      : activity.lastDate || '🤸'
+                  }}
                 </span>
                 <svg
                   class="w-4 h-4 text-gray-500"
@@ -68,14 +72,22 @@ export interface ActivityViewModel {
               <!-- Date Adjustment Slider -->
               <input
                 *ngIf="sliderVisibleId === activity.id"
+                style="accent-color: #d40b5b"
                 type="range"
                 min="-5"
-                style="accent-color: #d40b5b"
                 max="5"
                 step="1"
                 [value]="0"
                 class="slider w-32"
-                (input)="adjustDate($any($event.target).value, activity.id)"
+                (input)="
+                  previewAdjustDate($any($event.target).value, activity.id)
+                "
+                (mouseup)="
+                  finalizeDateAdjust(activity.id, $any($event.target).value)
+                "
+                (touchend)="
+                  finalizeDateAdjust(activity.id, $any($event.target).value)
+                "
               />
             </div>
           </div>
@@ -93,7 +105,9 @@ export interface ActivityViewModel {
 export class AppComponent {
   readonly stateService = inject(StateService);
 
-  sliderVisibleId: string | null = null; // Tracks which slider is currently visible
+  sliderVisibleId: string | null = null; // Tracks the currently visible slider
+  previewingId: string | null = null; // Tracks the activity being previewed
+  previewDate: string | null = null; // Holds the preview date for display
 
   readonly currentDay = computed(() => {
     return new Date().toLocaleDateString('pl', {
@@ -143,18 +157,42 @@ export class AppComponent {
   );
 
   trackClick(id: string) {
-    this.stateService.updateActivityDate(id);
+    this.stateService.updateActivityDate(id, 0);
   }
 
-  // Toggle the visibility of the slider for a specific activity
+  // Toggles the visibility of the slider for a specific activity
   toggleSlider(activityId: string) {
     this.sliderVisibleId =
       this.sliderVisibleId === activityId ? null : activityId;
+    this.previewingId = null; // Clear preview when toggling
   }
 
-  // Adjust the date based on the slider value
-  adjustDate(dayDelta: string, activityId: string) {
+  // Preview the adjusted date while sliding (user sees the updated date immediately)
+  previewAdjustDate(dayDelta: string, activityId: string) {
     const dayOffset = parseInt(dayDelta, 10); // Convert slider value to a number
-    this.stateService.updateActivityDate(activityId, dayOffset);
+    const currentDate = new Date();
+    const previewedDate = new Date(
+      currentDate.setDate(currentDate.getDate() + dayOffset),
+    );
+    this.previewingId = activityId; // Track the currently previewed activity
+    this.previewDate = this.formatDateToDisplay(previewedDate); // Format for UI display
+  }
+
+  // Finalize the adjusted date when the slider interaction ends
+  finalizeDateAdjust(activityId: string, dayDelta: string) {
+    const dayOffset = parseInt(dayDelta, 10); // Convert slider value to a number
+    this.stateService.updateActivityDate(activityId, dayOffset); // Update the actual date in state
+    this.previewingId = null; // Clear the preview state
+    this.previewDate = null; // Clear the preview date
+    this.sliderVisibleId = null;
+  }
+
+  // Helper to format preview date for display
+  private formatDateToDisplay(date: Date): string {
+    return date.toLocaleDateString('pl', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+    });
   }
 }
