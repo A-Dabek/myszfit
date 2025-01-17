@@ -29,9 +29,11 @@ export class StateService {
     },
   ) as Observable<Activity[]>;
 
-  updateActivityDate(id: string) {
+  updateActivityDate(id: string, delta: number = 0) {
     const activityDocRef = doc(this.activitiesCollection, id);
 
-    return updateDoc(activityDocRef, { lastDate: new Date().getTime() });
+    const date = new Date();
+    date.setDate(date.getDate() + delta);
+    return updateDoc(activityDocRef, { lastDate: date.getTime() });
   }
 }
