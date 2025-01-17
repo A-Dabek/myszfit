@@ -4,9 +4,9 @@ import {
   Component,
   computed,
   inject,
-  OnInit,
 } from '@angular/core';
 import { map } from 'rxjs';
+import { ProgressComponent } from './progress/progress.component';
 import { StateService } from './state.service';
 
 export interface ActivityViewModel {
@@ -19,7 +19,7 @@ export interface ActivityViewModel {
   selector: 'app-root',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgForOf, AsyncPipe],
+  imports: [NgForOf, AsyncPipe, ProgressComponent],
   template: `
     <main class="bg-gray-100 min-h-screen ">
       <h1 class="text-center text-xl font-bold mb-6">
@@ -32,14 +32,21 @@ export interface ActivityViewModel {
             class="flex items-center space-x-4"
           >
             <button
+              style="background-color: #d40b5b"
               class="px-4 py-2 bg-blue-500 text-white rounded w-40"
               (click)="trackClick(activity.id)"
             >
               {{ activity.name }}
             </button>
-            <span>{{ activity.lastDate }}</span>
+            <span>{{ activity.lastDate || '🤸' }}</span>
           </div>
         </div>
+      </div>
+      <div class="mt-5 flex-grow flex items-center justify-center">
+        <app-progress
+          style="zoom: 2"
+          [progress]="(progress$ | async) || 0"
+        ></app-progress>
       </div>
     </main>
   `,
@@ -83,10 +90,17 @@ export class AppComponent {
                 day: 'numeric',
                 month: 'long',
               })
-            : '🤸',
+            : '',
         } as ActivityViewModel;
       }),
     ),
+  );
+
+  readonly progress$ = this.activities$.pipe(
+    map((activities) => {
+      console.log(activities);
+      return activities.filter((activity) => !!activity.lastDate).length / 4.0;
+    }),
   );
 
   trackClick(id: string) {
