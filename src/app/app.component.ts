@@ -83,7 +83,10 @@ export class AppComponent {
 
   readonly progress$ = this.activities$.pipe(
     map((activities) => {
-      return activities.filter((activity) => !!activity.lastDate).length / 4.0;
+      return (
+        activities.filter((activity) => !!activity.lastDate).length /
+        activities.length
+      );
     }),
   );
 
