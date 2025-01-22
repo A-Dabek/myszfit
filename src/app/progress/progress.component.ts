@@ -37,6 +37,19 @@ import { Component, Input } from '@angular/core';
         [attr.stroke-dasharray]="circumference"
         [attr.stroke-dashoffset]="dashOffset"
       />
+
+      <!-- Heart Emoji -->
+      <text
+        x="50"
+        [attr.y]="heartVerticalAdjustment"
+        class="heart"
+        [attr.font-size]="heartFontSize"
+        text-anchor="middle"
+        dominant-baseline="middle"
+        transform="rotate(90, 50, 50)"
+      >
+        ❤️
+      </text>
     </svg>
 
     <style>
@@ -63,11 +76,30 @@ import { Component, Input } from '@angular/core';
         transform: rotate(0deg);
         transform-origin: center;
       }
+
+      .heart {
+        fill: #ff0066; /* Use the same gradient color or any color of choice */
+        transition: font-size 0.35s;
+      }
     </style>
   `,
 })
 export class ProgressComponent {
   @Input() progress = 0;
+
+  get heartVerticalAdjustment(): string {
+    // Adjust the y coordinate to vertically center the heart
+    return '54%'; // Fine-tune for perfect centering
+  }
+
+  get heartFontSize(): number {
+    // Scales the size of the heart between 10px and 40px depending on progress
+    const minSize = 10;
+    const maxSize = 45;
+    return (
+      minSize + (maxSize - minSize) * Math.max(0, Math.min(this.progress, 1))
+    );
+  }
 
   get circumference(): number {
     const radius = 45; // Matches the 'r' attribute of the circle
