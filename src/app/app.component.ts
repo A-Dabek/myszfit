@@ -15,27 +15,20 @@ import { StateService } from './state.service';
   selector: 'app-root',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    NgForOf,
-    AsyncPipe,
-    ProgressComponent,
-    NgIf,
-    HeaderComponent,
-    ActivityComponent,
-  ],
+  imports: [AsyncPipe, ProgressComponent, HeaderComponent, ActivityComponent],
   template: `
     <main class="bg-gray-100 min-h-screen pt-3">
       <app-header class="block" />
       <div class="flex flex-col items-center justify-center">
         <div class="flex flex-col space-y-4">
-          <div *ngFor="let activity of activities$ | async; let i = index">
+          @for (activity of activities$ | async; track activity.id) {
             <app-activity
               class="flex items-center space-x-4"
               [activity]="activity"
               (trackClick)="onTrackClick(activity.id)"
               (dateChanged)="onDateChanged(activity.id, $event)"
             />
-          </div>
+          }
         </div>
       </div>
       <div class="mt-5 flex-grow flex items-center justify-center">

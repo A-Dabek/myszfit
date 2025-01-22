@@ -1,3 +1,4 @@
+import { NgIf } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -27,13 +28,15 @@ export interface ActivityViewModel {
     </button>
 
     <!-- Interactive Date -->
-    <div class="flex flex-col">
-      <span class="text-gray-700 font-medium">
+    <div class="flex align-baseline gap-1">
+      <span
+        class="text-gray-700 font-medium"
+        (click)="toggleAdjustmentButtons()"
+      >
         {{ activity().lastDate || '🤸' }}
       </span>
 
-      <!-- Date Adjustment Buttons -->
-      <div class="flex space-x-2 items-center mt-2">
+      @if (showAdjustmentButtons) {
         <button
           style="background-color: #008CBA"
           class="px-3 py-1 bg-blue-500 text-white rounded"
@@ -48,7 +51,7 @@ export interface ActivityViewModel {
         >
           +
         </button>
-      </div>
+      }
     </div>
   `,
 })
@@ -56,6 +59,13 @@ export class ActivityComponent {
   readonly activity = input.required<ActivityViewModel>();
   readonly trackClick = output();
   readonly dateChanged = output<number>();
+
+  showAdjustmentButtons = false;
+
+  toggleAdjustmentButtons() {
+    console.log('really?');
+    this.showAdjustmentButtons = !this.showAdjustmentButtons;
+  }
 
   adjustDate(dayDelta: number) {
     const today = new Date();
