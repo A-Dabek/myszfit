@@ -17,8 +17,8 @@ import { StateService } from './state.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [AsyncPipe, ProgressComponent, HeaderComponent, ActivityComponent],
   template: `
-    <main class="bg-gray-100 min-h-svh flex flex-col justify-between py-14">
-      <app-header class="block" />
+    <main class="bg-gray-100 min-h-svh flex flex-col justify-between py-14 ">
+      <app-header class="block cormorant-garamond-regular" />
       <div class="flex flex-col items-center justify-center">
         <div class="flex flex-col space-y-4">
           @for (activity of activities$ | async; track activity.id) {

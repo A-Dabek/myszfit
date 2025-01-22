@@ -30,7 +30,7 @@ export interface ActivityViewModel {
     <!-- Interactive Date -->
     <div class="flex align-baseline gap-1">
       <span
-        class="text-gray-700 font-medium"
+        class="text-gray-700 text-xl cormorant-garamond-regular"
         (click)="toggleAdjustmentButtons()"
       >
         {{ activity().lastDate || '🤸🏻‍♂' }}
