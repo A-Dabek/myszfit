@@ -18,9 +18,9 @@ import { Component, Input } from '@angular/core';
           x2="0%"
           y2="100%"
         >
-          <stop offset="0%" stop-color="#ff0066" />
+          <stop offset="0%" stop-color="#cc0052" />
           <!-- Darker pink -->
-          <stop offset="100%" stop-color="#ff99cc" />
+          <stop offset="100%" stop-color="#ff6699" />
           <!-- Lighter pink -->
         </linearGradient>
       </defs>
@@ -48,7 +48,7 @@ import { Component, Input } from '@angular/core';
         dominant-baseline="middle"
         transform="rotate(90, 50, 50)"
       >
-        ❤️
+        🏆
       </text>
     </svg>
 
@@ -78,7 +78,6 @@ import { Component, Input } from '@angular/core';
       }
 
       .heart {
-        fill: #ff0066; /* Use the same gradient color or any color of choice */
         transition: font-size 0.35s;
       }
     </style>

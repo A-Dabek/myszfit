@@ -33,7 +33,7 @@ export interface ActivityViewModel {
         class="text-gray-700 font-medium"
         (click)="toggleAdjustmentButtons()"
       >
-        {{ activity().lastDate || '🤸' }}
+        {{ activity().lastDate || '🤸🏻‍♂' }}
       </span>
 
       @if (showAdjustmentButtons) {

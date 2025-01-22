@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
   selector: 'app-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <h1 class="text-center text-xl font-bold mb-6">
+    <h1 class="text-center text-xl mb-0">
       {{ currentDay() }}
     </h1>
   `,

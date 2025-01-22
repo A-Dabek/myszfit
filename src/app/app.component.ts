@@ -17,7 +17,7 @@ import { StateService } from './state.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [AsyncPipe, ProgressComponent, HeaderComponent, ActivityComponent],
   template: `
-    <main class="bg-gray-100 min-h-screen pt-3">
+    <main class="bg-gray-100 min-h-svh flex flex-col justify-between py-14">
       <app-header class="block" />
       <div class="flex flex-col items-center justify-center">
         <div class="flex flex-col space-y-4">
@@ -31,7 +31,7 @@ import { StateService } from './state.service';
           }
         </div>
       </div>
-      <div class="mt-5 flex-grow flex items-center justify-center">
+      <div class="mt-5 flex items-center justify-center">
         <app-progress
           style="zoom: 2"
           [progress]="(progress$ | async) || 0"
