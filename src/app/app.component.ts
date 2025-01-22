@@ -71,6 +71,7 @@ export class AppComponent {
         return {
           name: activity.name,
           id: activity.id,
+          timestamp: activity.lastDate,
           lastDate: isInThisWeek(date)
             ? new Date(activity.lastDate).toLocaleDateString('pl', {
                 weekday: 'long',
