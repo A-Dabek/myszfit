@@ -5,8 +5,9 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import { map } from 'rxjs';
+import { map, pairwise } from 'rxjs';
 import { ActivityComponent, ActivityViewModel } from './activity.component';
+import { CongratulationsComponent } from './congratulations.component';
 import { HeaderComponent } from './header.component';
 import { ProgressComponent } from './progress/progress.component';
 import { StateService } from './state.service';
@@ -15,9 +16,18 @@ import { StateService } from './state.service';
   selector: 'app-root',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, ProgressComponent, HeaderComponent, ActivityComponent],
+  imports: [
+    AsyncPipe,
+    ProgressComponent,
+    HeaderComponent,
+    ActivityComponent,
+    CongratulationsComponent,
+  ],
   template: `
     <main class="bg-gray-100 min-h-svh flex flex-col justify-between py-14 ">
+      @if (activitiesCompletedToMax$ | async) {
+        <app-congratulations />
+      }
       <app-header class="block cormorant-garamond-regular" />
       <div class="flex flex-col items-center justify-center">
         <div class="flex flex-col space-y-4">
@@ -82,6 +92,22 @@ export class AppComponent {
         activities.length
       );
     }),
+  );
+
+  readonly activitiesCompletedToMax$ = this.activities$.pipe(
+    map((activities) => {
+      const completedActivities = activities.filter(
+        (activity) => !!activity.lastDate,
+      ).length;
+      const maxActivities = activities.length; // Dynamically calculate the maximum
+      return { maxActivities, completedActivities };
+    }),
+    pairwise(),
+    map(
+      ([prev, current]) =>
+        prev.completedActivities === current.maxActivities - 1 &&
+        current.completedActivities === current.maxActivities,
+    ),
   );
 
   onTrackClick(id: string) {
