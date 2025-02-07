@@ -5,12 +5,13 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import { map, pairwise } from 'rxjs';
+import { map, pairwise, tap } from 'rxjs';
 import { ActivityComponent, ActivityViewModel } from './activity.component';
 import { CongratulationsComponent } from './congratulations.component';
 import { HeaderComponent } from './header.component';
 import { ProgressComponent } from './progress/progress.component';
 import { StateService } from './state.service';
+import { WeekProgressComponent } from './week-progress/week-progress.component';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ import { StateService } from './state.service';
     HeaderComponent,
     ActivityComponent,
     CongratulationsComponent,
+    WeekProgressComponent,
   ],
   template: `
     <main class="bg-gray-100 min-h-svh flex flex-col justify-between py-14 ">
@@ -29,6 +31,7 @@ import { StateService } from './state.service';
         <app-congratulations />
       }
       <app-header class="block cormorant-garamond-regular" />
+      <app-week-progress />
       <div class="flex flex-col items-center justify-center">
         <div class="flex flex-col space-y-4">
           @for (activity of activities$ | async; track activity.id) {
@@ -108,6 +111,23 @@ export class AppComponent {
         prev.completedActivities === current.maxActivities - 1 &&
         current.completedActivities === current.maxActivities,
     ),
+    tap((completed) => {
+      if (!completed) return;
+
+      const getWeekOfYear = (date: Date): number => {
+        const startOfYear = new Date(date.getFullYear(), 0, 1);
+        const daysDifference = Math.floor(
+          (date.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000),
+        );
+        return Math.ceil((daysDifference + startOfYear.getDay() + 1) / 7);
+      };
+
+      const currentWeekOfYear = getWeekOfYear(new Date());
+      this.stateService.updateWeekProgress(
+        new Date().getFullYear(),
+        currentWeekOfYear,
+      );
+    }),
   );
 
   onTrackClick(id: string) {
