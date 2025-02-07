@@ -46,10 +46,10 @@ export interface ActivityViewModel {
         </button>
         <button
           style="background-color: #4CAF50"
-          class="px-3 py-1 bg-green-500 text-white rounded"
-          (click)="adjustDate(1)"
+          class="px-3 py-1 bg-red-600 text-white rounded"
+          (click)="adjustDate(-7)"
         >
-          +
+          X
         </button>
       }
     </div>
@@ -63,7 +63,6 @@ export class ActivityComponent {
   showAdjustmentButtons = false;
 
   toggleAdjustmentButtons() {
-    console.log('really?');
     this.showAdjustmentButtons = !this.showAdjustmentButtons;
   }
 
@@ -72,7 +71,7 @@ export class ActivityComponent {
     const currentDate = new Date(this.activity().timestamp);
     const dayDeltaOfCurrentToToday =
       dayDelta - (today.getDay() - currentDate.getDay());
-    const clampedDayDelta = Math.max(-6, Math.min(dayDeltaOfCurrentToToday, 6));
+    const clampedDayDelta = Math.max(-7, Math.min(dayDeltaOfCurrentToToday, 6));
     this.dateChanged.emit(clampedDayDelta);
   }
 }

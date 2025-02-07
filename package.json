@@ -20,6 +20,7 @@
     "@angular/forms": "^18.2.0",
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
+    "@angular/pwa": "^0.5.3",
     "@angular/router": "^18.2.0",
     "angular-animations": "^0.11.0",
     "canvas-confetti": "^1.9.3",
