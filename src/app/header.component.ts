@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
+import {WeekProgressComponent} from './week-progress/week-progress.component';
 
 @Component({
   standalone: true,
   selector: 'app-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <h1 class="text-center text-2xl mb-0">
-      {{ currentDay() }}
-    </h1>
-  `,
+      <h1 class="text-center text-xl mb-0">
+        {{ currentDay() }}
+      </h1>
+  `
 })
 export class HeaderComponent {
   readonly currentDay = computed(() => {

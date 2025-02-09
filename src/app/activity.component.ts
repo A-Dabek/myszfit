@@ -66,11 +66,19 @@ export class ActivityComponent {
     this.showAdjustmentButtons = !this.showAdjustmentButtons;
   }
 
+  private customWeekDay(day: number): number {
+    // Re-map Sunday (0) to 7, all other days (1-6) stay the same
+    return (day + 6) % 7 + 1;
+  }
+
   adjustDate(dayDelta: number) {
     const today = new Date();
     const currentDate = new Date(this.activity().timestamp);
-    const dayDeltaOfCurrentToToday =
-      dayDelta - (today.getDay() - currentDate.getDay());
+
+    const todayDay = this.customWeekDay(today.getDay());
+    const currentDay = this.customWeekDay(currentDate.getDay());
+
+    const dayDeltaOfCurrentToToday = dayDelta - (todayDay - currentDay);
     const clampedDayDelta = Math.max(-7, Math.min(dayDeltaOfCurrentToToday, 6));
     this.dateChanged.emit(clampedDayDelta);
   }

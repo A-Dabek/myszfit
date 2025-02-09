@@ -26,12 +26,12 @@ import { WeekProgressComponent } from './week-progress/week-progress.component';
     WeekProgressComponent,
   ],
   template: `
-    <main class="bg-gray-100 min-h-svh flex flex-col justify-between py-14 ">
+    <main class="bg-gray-100 min-h-svh flex flex-col justify-between py-10 ">
       @if (activitiesCompletedToMax$ | async) {
         <app-congratulations />
       }
       <app-header class="block cormorant-garamond-regular" />
-      <app-week-progress />
+      <app-week-progress class="block my-2" />
       <div class="flex flex-col items-center justify-center">
         <div class="flex flex-col space-y-4">
           @for (activity of activities$ | async; track activity.id) {
