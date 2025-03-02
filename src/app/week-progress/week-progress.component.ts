@@ -7,9 +7,12 @@ import { StateService } from '../state.service';
   selector: 'app-week-progress',
   standalone: true,
   template: `
-    <div class="week-progress">
-      <h2 class="text-center text-2xl cormorant-garamond-regular">
-        {{ completedWeeks$ | async }}/{{currentWeekNumber}} 🎉
+    <div class="week-progress cormorant-garamond-regular">
+      <h2 class="text-center text-2xl">
+        {{ completedWeeks$ | async }}/{{ currentWeekNumber }} 🎉
+      </h2>
+      <h2 class="text-center text-2xl">
+        {{ totalFinishedActivities$ | async }}/{{ currentWeekNumber * 5 }} 🤸🏻‍♂
       </h2>
     </div>
   `,
@@ -18,13 +21,13 @@ import { StateService } from '../state.service';
 export class WeekProgressComponent {
   private readonly stateService = inject(StateService);
 
-  readonly completedWeeks$ = this.stateService
-    .getCompletedWeeks()
-    .pipe(map((completedWeeks) => completedWeeks.length));
+  readonly completedWeeks$ = this.stateService.getCompletedWeeks();
+  readonly totalFinishedActivities$ =
+    this.stateService.getTotalFinishedActivities();
 
   readonly currentWeekNumber = Math.ceil(
     (new Date().getTime() -
       new Date(new Date().getFullYear(), 0, 1).getTime()) /
-    (7 * 24 * 60 * 60 * 1000)
+      (7 * 24 * 60 * 60 * 1000),
   );
 }

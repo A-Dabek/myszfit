@@ -1,10 +1,5 @@
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-} from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { map, pairwise, tap } from 'rxjs';
 import { ActivityComponent, ActivityViewModel } from './activity.component';
 import { CongratulationsComponent } from './congratulations.component';
@@ -106,28 +101,21 @@ export class AppComponent {
       return { maxActivities, completedActivities };
     }),
     pairwise(),
-    map(
-      ([prev, current]) =>
-        prev.completedActivities === current.maxActivities - 1 &&
-        current.completedActivities === current.maxActivities,
-    ),
-    tap((completed) => {
-      if (!completed) return;
-
-      const getWeekOfYear = (date: Date): number => {
-        const startOfYear = new Date(date.getFullYear(), 0, 1);
-        const daysDifference = Math.floor(
-          (date.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000),
-        );
-        return Math.ceil((daysDifference + startOfYear.getDay() + 1) / 7);
+    map(([prev, current]) => {
+      return {
+        activitiesCompleted: current.completedActivities,
+        weekCompleted:
+          prev.completedActivities === current.maxActivities - 1 &&
+          current.completedActivities === current.maxActivities,
       };
-
-      const currentWeekOfYear = getWeekOfYear(new Date());
+    }),
+    tap((result) => {
       this.stateService.updateWeekProgress(
-        new Date().getFullYear(),
-        currentWeekOfYear,
+        result.activitiesCompleted,
+        result.weekCompleted,
       );
     }),
+    map((result) => result.weekCompleted),
   );
 
   onTrackClick(id: string) {
