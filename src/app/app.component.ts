@@ -104,7 +104,8 @@ export class AppComponent {
     map(([prev, current]) => {
       return {
         activitiesCompleted: current.completedActivities,
-        weekCompleted:
+        weekCompleted: current.completedActivities === current.maxActivities,
+        weekCompletedJustNow:
           prev.completedActivities === current.maxActivities - 1 &&
           current.completedActivities === current.maxActivities,
       };
@@ -115,7 +116,7 @@ export class AppComponent {
         result.weekCompleted,
       );
     }),
-    map((result) => result.weekCompleted),
+    map((result) => result.weekCompletedJustNow),
   );
 
   onTrackClick(id: string) {
